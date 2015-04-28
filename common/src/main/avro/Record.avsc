@@ -1,0 +1,38 @@
+[
+  {
+    "type":"enum",
+    "name":"FieldFlag",
+    "namespace":"com.cloudera.integration.oracle.goldengate.ldv.common",
+    "symbols":["NULL","MISSING","PRESENT"]
+  },
+  {
+    "type":"record",
+    "name":"FieldValue",
+    "namespace":"com.cloudera.integration.oracle.goldengate.ldv.common",
+    "fields":[
+      {
+        "type":"FieldFlag",
+        "name":"Flag"
+      },
+      {
+        "type":["null", "string"],
+        "name":"Value"
+      }
+    ]
+  },
+  {
+    "type":"record",
+    "name":"Message",
+    "namespace":"com.cloudera.integration.oracle.goldengate.ldv.common",
+    "fields":[
+      {
+        "name":"Metadata",
+        "type":{ "type":"map", "values":"string"}
+      },
+      {
+        "name":"Values",
+        "type":{ "type":"array", "items":"FieldValue"}
+      }
+    ]
+  }
+]
