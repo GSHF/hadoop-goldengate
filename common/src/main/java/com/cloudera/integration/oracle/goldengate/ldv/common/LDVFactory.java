@@ -35,4 +35,9 @@ public class LDVFactory {
     public LDVReader openReader(InputStream inputStream) {
         return new LDVReader(inputStream, settings);
     }
+
+    public LDVWriter openWriter(File outputPath) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(outputPath);
+        return new LDVWriter(outputStream, this.settings);
+    }
 }

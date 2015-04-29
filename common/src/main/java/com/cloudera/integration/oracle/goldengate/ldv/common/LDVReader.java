@@ -87,8 +87,9 @@ public class LDVReader implements AutoCloseable, Iterator<com.cloudera.integrati
                 metadata.put(metadataFieldName, value);
             }
 
-            while (input.available() > 0) {
-                Character flag = (char) input.read();
+            int flagByte;
+            while ((flagByte=input.read())!=-1) {
+                Character flag = (char) flagByte;
 
                 FieldValue.Builder fieldValueBuilder = FieldValue.newBuilder();
                 FieldFlag fieldFlag = this.fieldFlagLookup.get(flag);

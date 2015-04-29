@@ -1,6 +1,7 @@
 package com.cloudera.integration.oracle.goldengate.ldv.common;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,99 +17,30 @@ import java.util.Map;
  * Created by jcustenborder on 4/27/15.
  */
 public class LDVReaderTest {
-
-    static void addFieldValue(Message.Builder messageBuilder, String value, FieldFlag flag) {
-        FieldValue.Builder fieldValueBuilder = FieldValue.newBuilder();
-        fieldValueBuilder.setValue(value);
-        fieldValueBuilder.setFlag(flag);
-        FieldValue fieldValue = fieldValueBuilder.build();
-        messageBuilder.getValues().add(fieldValue);
-    }
-
     static Message[] expected;
 
     @BeforeClass
     public static void setupClass(){
-        Message[] messages = new Message[7];
-        List<FieldValue> fieldValues = new ArrayList<>();
-        Map<CharSequence, CharSequence> headers = new HashMap<>();
-        headers.put("opcode", "INS");
-        headers.put("timestamp", "2015-04-27 19:18:33.696069");
-
-        Message.Builder messageBuilder = null;
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "1", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "Red  ", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "1", FieldFlag.PRESENT);
-        messages[0] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "2", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "Green", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "2", FieldFlag.PRESENT);
-        messages[1] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "3", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "Blue ", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        messages[2] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "4", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, "Black", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        messages[3] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "5", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        addFieldValue(messageBuilder, "5", FieldFlag.PRESENT);
-        messages[4] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "6", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        addFieldValue(messageBuilder, "6", FieldFlag.PRESENT);
-        messages[5] = messageBuilder.build();
-
-        messageBuilder = Message.newBuilder();
-        messageBuilder.setMetadata(headers);
-        messageBuilder.setValues(new ArrayList<FieldValue>());
-        addFieldValue(messageBuilder, "7", FieldFlag.PRESENT);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        addFieldValue(messageBuilder, null, FieldFlag.NULL);
-        messages[6] = messageBuilder.build();
-
-        expected = messages;
+        expected = TestDataHelper.getTestMessages();
     }
 
+    Settings settings;
+    LDVFactory factory;
 
-    @Test
-    public void test() throws IOException{
-
-        Settings settings = new Settings();
+    @Before
+    public void setup(){
+        settings = new Settings();
         settings.fieldLengthEncoding = Settings.LengthEncoding.ASCII;
         settings.fieldLength = 8;
         settings.recordLengthEncoding = Settings.LengthEncoding.ASCII;
         settings.recordLength = 8;
         settings.metadataColumns = new String[]{"opcode", "timestamp"};
 
-        LDVFactory factory = new LDVFactory(settings);
+        factory = new LDVFactory(settings);
+    }
 
+    @Test
+    public void test() throws IOException{
         List<Message> messages = new ArrayList<>();
 
         try(InputStream resourceAsStream = LDVReaderTest.class.getResourceAsStream("example.ldv")){

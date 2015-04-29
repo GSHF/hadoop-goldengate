@@ -22,7 +22,71 @@ public class Settings {
     String[] metadataColumns;
     Character fieldFlagNull='N';
     Character fieldFlagMissing='M';
-    Character getFieldFlagPresent='P';
+    Character fieldFlagPresent='P';
+
+    public LengthEncoding getRecordLengthEncoding() {
+        return recordLengthEncoding;
+    }
+
+    public void setRecordLengthEncoding(LengthEncoding recordLengthEncoding) {
+        this.recordLengthEncoding = recordLengthEncoding;
+    }
+
+    public LengthEncoding getFieldLengthEncoding() {
+        return fieldLengthEncoding;
+    }
+
+    public void setFieldLengthEncoding(LengthEncoding fieldLengthEncoding) {
+        this.fieldLengthEncoding = fieldLengthEncoding;
+    }
+
+    public String[] getMetadataColumns() {
+        return metadataColumns;
+    }
+
+    public void setMetadataColumns(String[] metadataColumns) {
+        this.metadataColumns = metadataColumns;
+    }
+
+    public int getRecordLength() {
+        return recordLength;
+    }
+
+    public void setRecordLength(int recordLength) {
+        this.recordLength = recordLength;
+    }
+
+    public Character getFieldFlagMissing() {
+        return fieldFlagMissing;
+    }
+
+    public void setFieldFlagMissing(Character fieldFlagMissing) {
+        this.fieldFlagMissing = fieldFlagMissing;
+    }
+
+    public Character getFieldFlagNull() {
+        return fieldFlagNull;
+    }
+
+    public void setFieldFlagNull(Character fieldFlagNull) {
+        this.fieldFlagNull = fieldFlagNull;
+    }
+
+    public Character getFieldFlagPresent() {
+        return fieldFlagPresent;
+    }
+
+    public void setFieldFlagPresent(Character fieldFlagPresent) {
+        this.fieldFlagPresent = fieldFlagPresent;
+    }
+
+    public int getFieldLength() {
+        return fieldLength;
+    }
+
+    public void setFieldLength(int fieldLength) {
+        this.fieldLength = fieldLength;
+    }
 
     LengthFormatter getFieldLengthFormatter(){
         if(LengthEncoding.ASCII == this.fieldLengthEncoding){
@@ -42,7 +106,7 @@ public class Settings {
         Map<Character, FieldFlag> fieldFlagLookup = new HashMap<>();
         fieldFlagLookup.put(fieldFlagMissing, FieldFlag.MISSING);
         fieldFlagLookup.put(fieldFlagNull, FieldFlag.NULL);
-        fieldFlagLookup.put(getFieldFlagPresent, FieldFlag.PRESENT);
+        fieldFlagLookup.put(fieldFlagPresent, FieldFlag.PRESENT);
         return fieldFlagLookup;
     }
 
@@ -50,7 +114,7 @@ public class Settings {
         Map<FieldFlag, Integer> lookup = new HashMap<>();
         lookup.put(FieldFlag.MISSING,  (int) fieldFlagMissing.charValue());
         lookup.put(FieldFlag.NULL,  (int) fieldFlagNull.charValue());
-        lookup.put(FieldFlag.PRESENT,  (int) getFieldFlagPresent.charValue());
+        lookup.put(FieldFlag.PRESENT,  (int) fieldFlagPresent.charValue());
         return lookup;
     }
 }
