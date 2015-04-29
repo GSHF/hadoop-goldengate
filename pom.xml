@@ -13,13 +13,17 @@
   <modules>
     <module>mapreduce</module>
     <module>hive</module>
+    <module>common</module>
+    <module>flume</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <hadoop.version>2.5.0-cdh5.2.0</hadoop.version>
+    <hadoop.version>2.6.0-cdh5.4.0</hadoop.version>
+    <avro.version>1.7.6-cdh5.4.0</avro.version>
     <mrunit.version>1.1.0</mrunit.version>
-    <hive.version>0.13.1-cdh5.2.0</hive.version>
+    <hive.version>1.1.0-cdh5.4.0</hive.version>
+    <flume.version>1.5.0-cdh5.4.0</flume.version>
   </properties>
   
   <dependencies>        
@@ -42,11 +46,17 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>  
+  </build>
   <repositories>
     <repository>
       <id>cloudera</id>
       <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
     </repository>
-  </repositories>  
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
