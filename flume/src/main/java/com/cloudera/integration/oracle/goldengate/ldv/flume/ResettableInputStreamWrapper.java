@@ -8,7 +8,7 @@ import java.io.InputStream;
 /**
  * Created by jcustenborder on 4/28/15.
  */
-public class ResettableInputStreamWrapper extends InputStream {
+class ResettableInputStreamWrapper extends InputStream {
 
     final ResettableInputStream resettableInputStream;
 
