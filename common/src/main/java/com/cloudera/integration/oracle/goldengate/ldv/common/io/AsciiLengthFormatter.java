@@ -1,7 +1,9 @@
 package com.cloudera.integration.oracle.goldengate.ldv.common.io;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.ByteStreams;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,14 +31,12 @@ public class AsciiLengthFormatter extends LengthFormatter {
 
     @Override
     public int readLength(InputStream stream) throws IOException {
-        int read = stream.read(buffer);
-
-        if(read==-1){
+        try {
+            ByteStreams.readFully(stream, buffer);
+            String input = new String(buffer);
+            return Integer.parseInt(input);
+        } catch(EOFException ex){
             return -1;
         }
-
-        Preconditions.checkState(buffer.length == read, "Expected %s bytes but read %s byte(s).", buffer.length, read);
-        String input = new String(buffer);
-        return Integer.parseInt(input);
     }
 }

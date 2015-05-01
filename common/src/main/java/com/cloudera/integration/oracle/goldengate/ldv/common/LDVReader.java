@@ -2,6 +2,8 @@ package com.cloudera.integration.oracle.goldengate.ldv.common;
 
 import com.cloudera.integration.oracle.goldengate.ldv.common.io.LengthFormatter;
 import com.google.common.base.Preconditions;
+import com.google.common.io.ByteStreams;
+import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class LDVReader implements AutoCloseable, Iterator<com.cloudera.integrati
 
         byte[] recordBuffer = new byte[recordLength];
         try {
-            readFully(this.inputStream, recordBuffer);
+            ByteStreams.readFully(this.inputStream, recordBuffer);
             parseRecord(recordBuffer);
             return true;
         } catch(IOException ex){
@@ -63,15 +65,11 @@ public class LDVReader implements AutoCloseable, Iterator<com.cloudera.integrati
         }
     }
 
-    private static void readFully(InputStream input, byte[] buffer) throws IOException {
-        int read = input.read(buffer);
-        Preconditions.checkState(read == buffer.length, "Read %s bytes but expected %s", read, buffer.length);
-    }
 
     private String readString(InputStream input) throws IOException {
         int fieldLength = this.fieldLengthFormatter.readLength(input);
         byte[] fieldBuffer = new byte[fieldLength];
-        readFully(input, fieldBuffer);
+        ByteStreams.readFully(input, fieldBuffer);
         return new String(fieldBuffer, charset_UTF8);
     }
 
