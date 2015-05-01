@@ -6,6 +6,7 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.flume.Event;
+import org.apache.flume.event.EventBuilder;
 import org.apache.flume.event.SimpleEvent;
 
 import java.io.ByteArrayOutputStream;
@@ -53,14 +54,13 @@ class LDVEventBuilder {
         Map<String, String> headers =  new HashMap<>();
         headers.putAll(this.baseHeaders);
         for(Map.Entry<CharSequence, CharSequence> kvp:message.getMetadata().entrySet()){
-            headers.put((String)kvp.getKey(), (String)kvp.getValue());
+            String key = (String)kvp.getKey();
+            String value = (String)kvp.getValue();
+            headers.put(key, value);
         }
 
-        SimpleEvent event = new SimpleEvent();
-        event.setHeaders(headers);
         this.datumWriter.write(message, this.encoder);
         byte[] body = this.outputStream.toByteArray();
-        event.setBody(body);
-        return event;
+        return EventBuilder.withBody(body, headers);
     }
 }
