@@ -1,12 +1,12 @@
-** Introduction **
+## Introduction
 
 This project provides an input pipeline for [Oracle GoldenGate](http://www.oracle.com/us/products/middleware/data-integration/goldengate/overview/index.html) Length Delimited files (LDV). This works by breaking LDV files into events and writing them to the flume pipeline. An EventDeserializer is used to read data from a LDV file to an [Avro](https://avro.apache.org/) message. 
 
-** Installation **
+## Installation
 
 Download the jar and put it in the plugins folder for flume. Follow the [Installing third-party plugins](https://flume.apache.org/FlumeUserGuide.html#installing-third-party-plugins) section of the Flume user guide.
 
-** Configuration Properties **  
+## Configuration Properties  
 
 | First Header              | Second Header |
 | ------------------------- | ------------- |
@@ -19,7 +19,7 @@ Download the jar and put it in the plugins folder for flume. Follow the [Install
 
 
 
-** Example Configuration **
+## Example Configuration
 
 ```
 goldengate.sources.goldengate_spool.type                                = spooldir
