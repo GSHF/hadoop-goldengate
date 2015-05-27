@@ -63,10 +63,20 @@ public class LDVEventDeserializer implements EventDeserializer {
         public EventDeserializer build(Context context, ResettableInputStream resettableInputStream) {
             Settings settings = createSettings(context);
             LDVFactory factory = new LDVFactory(settings);
-            Map<String, String> additionalHeaders = context.getSubProperties(Builder.HEADERS);
             ResettableInputStreamWrapper wrapper = new ResettableInputStreamWrapper(resettableInputStream);
             LDVReader reader = factory.openReader(wrapper);
-            return new LDVEventDeserializer(resettableInputStream, reader, additionalHeaders);
+
+            Map<String, String> additionalHeaders = context.getSubProperties(Builder.HEADERS);
+            boolean lowerCaseSchemaHeader=context.getBoolean("lowercase.header.schema", true);
+            boolean lowerCaseTableHeader=context.getBoolean("lowercase.header.table", true);
+            int bufferSize = context.getInteger("buffer.size", 256 * 1024);
+
+            LDVEventBuilder eventBuilder = new LDVEventBuilder(additionalHeaders,
+                    bufferSize,
+                    lowerCaseSchemaHeader,
+                    lowerCaseTableHeader);
+
+            return new LDVEventDeserializer(resettableInputStream, reader, eventBuilder);
         }
     }
 
@@ -74,10 +84,19 @@ public class LDVEventDeserializer implements EventDeserializer {
     private final LDVEventBuilder eventBuilder;
     private final LDVReader reader;
 
-    LDVEventDeserializer(ResettableInputStream resettableInputStream, LDVReader reader, Map<String, String> headers){
+    /**
+     *
+     * @param resettableInputStream Input stream to read from.
+     * @param reader LDVReader to read from
+     * @param eventBuilder
+     */
+    LDVEventDeserializer(
+            ResettableInputStream resettableInputStream,
+            LDVReader reader,
+            LDVEventBuilder eventBuilder){
         this.resettableInputStream = resettableInputStream;
         this.reader = reader;
-        this.eventBuilder = new LDVEventBuilder(headers);
+        this.eventBuilder = eventBuilder;
     }
 
     @Override

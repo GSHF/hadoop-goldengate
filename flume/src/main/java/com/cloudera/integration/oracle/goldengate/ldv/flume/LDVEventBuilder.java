@@ -7,7 +7,6 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
-import org.apache.flume.event.SimpleEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,24 +22,30 @@ class LDVEventBuilder {
     private final ByteArrayOutputStream outputStream;
     private final BinaryEncoder encoder;
     private final SpecificDatumWriter<Message> datumWriter;
+    private final boolean lowerCaseSchemaHeader;
+    private final boolean lowerCaseTableHeader;
 
-    public LDVEventBuilder(Map<String, String> headers){
-        this(headers, 256 * 1024);
-    }
-
-    public LDVEventBuilder(Map<String, String> headers, int buffer){
+    public LDVEventBuilder(Map<String, String> headers,
+                           int bufferSize,
+                           boolean lowerCaseSchemaHeader,
+                           boolean lowerCaseTableHeader){
+        this.lowerCaseSchemaHeader = lowerCaseSchemaHeader;
+        this.lowerCaseTableHeader = lowerCaseTableHeader;
         this.baseHeaders = new HashMap<>();
 
         if(null!=headers) {
             this.baseHeaders.putAll(headers);
         }
 
-        this.outputStream = new ByteArrayOutputStream(buffer);
+        this.outputStream = new ByteArrayOutputStream(bufferSize);
         this.encoder = EncoderFactory.get().directBinaryEncoder(this.outputStream, null);
         this.datumWriter = new SpecificDatumWriter<>(Message.SCHEMA$);
         String schema = Message.SCHEMA$.toString(false);
         this.baseHeaders.put(LDVEventBuilder.SCHEMA_LITERAL, schema);
     }
+
+    static final String HEADER_SCHEMA="schema";
+    static final String HEADER_TABLE="table";
 
     /**
      * Method is used to create a Flume event from a LDV message.
@@ -56,6 +61,18 @@ class LDVEventBuilder {
         for(Map.Entry<CharSequence, CharSequence> kvp:message.getMetadata().entrySet()){
             String key = (String)kvp.getKey();
             String value = (String)kvp.getValue();
+
+            /*
+            We want to downcase the name of the schema and table if configured to do so.
+             */
+            if(lowerCaseSchemaHeader && HEADER_SCHEMA.equalsIgnoreCase(key)){
+                key = HEADER_SCHEMA;
+                value = value.toLowerCase();
+            } else if(lowerCaseTableHeader && HEADER_TABLE.equalsIgnoreCase(key)){
+                key = HEADER_TABLE;
+                value = value.toLowerCase();
+            }
+
             headers.put(key, value);
         }
 
